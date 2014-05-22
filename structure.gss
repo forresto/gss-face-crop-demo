@@ -1,35 +1,63 @@
 #container { 
-  width: == ::window[width] - 100 !require;
-  height: == ::window[height] - 100 !require;
-  center-x: == ::window[center-x] !require;
-  center-y: == ::window[center-y] !require;
+  /* Container in window with 50 margin */
+  @v |-[::]-| in(::window) gap(50) !require;
+  @h |-[::]-| in(::window) gap(50) !require;
 }
 
 #image {
-  /* aspect ratio 1280/977 */
+  /* Aspect ratio 1280/977 */
   ::[width] == ::[height] * (1280/977) !require;
+  /* [image-scale] variable to use later */
   ::[width] == [image-scale] * 1280 !require;
 
-  /* cover */
-  ::[width] >= #container[width] !strong;
-  ::[height] >= #container[height] !strong;
+  /* Prefer the original size */
+  ::[width] == 1280;
+  ::[height] == 977;
 
-  /* don't crop faces */
-  ::[x] >= 50 - #face[x] !medium;
-  ::[y] >= 50 - #face[y] !medium;
-  ::[right] >= 50 - #face[right] !medium;
-  ::[bottom] >= 50 - #face[bottom] !medium;
-
-  /* center */
-  ::[center-x] == #container[center-x] !weak;
-  ::[center-y] == #container[center-y] !weak;
+  /* Prefer to not scale below 50% */
+  /* (otherwise will prefer to show all) */
+  ::[height] >= 977 * 0.75 !strong;
 }
 
-/* todo @virtual "faces"; */
-/* face rectangle - x 790 y 158 w 90 h 116 */
+/* Face rectangle - x 790 y 158 w 90 h 116 */
 #face {
-  ::[x] == #image[x] + 790 * [image-scale];
-  ::[y] == #image[y] + 158 * [image-scale];
-  ::[width] == 90 * [image-scale];
-  ::[height] == 116 * [image-scale];
+
+  @virtual "face";
+
+  "face"[x] == #image[x] + 790 * [image-scale] !require;
+  "face"[y] == #image[y] + 158 * [image-scale] !require;
+  "face"[width] == 90 * [image-scale] !require;
+  "face"[height] == 116 * [image-scale] !require;
+
+  /* Keep face towards original position */
+  "face"[center-x] == #container[x] + #container[width] * (835/1280);
+  "face"[center-y] == #container[y] + #container[height] * (216/977);
+
+  /* Keep face towards center */
+  /*"face"[center-x] == #container[center-x];
+  "face"[center-y] == #container[center-y];*/
+
+  /* Keep the face in the container with a cushion */
+  @v |~-~["face"]~-~| in(#container) gap(10) !strong;
+  @h |~-~["face"]~-~| in(#container) gap(10) !strong;
+
+  /* Visualize the virtual */
+  @v |[#face]| in("face") !medium;
+  @h |[#face]| in("face") !medium;
+}
+
+/* Image should cover container */
+@v |~[#container]~| in(#image) !require;
+@h |~[#container]~| in(#image) !require;
+
+/* Image prefers to stick to container edge */
+@v |[#container]| in(#image) !medium;
+@h |[#container]| in(#image) !medium;
+
+
+#copyright {
+  ::[width] == ::[intrinsic-width];
+  ::[height] == ::[intrinsic-height];
+  ::[y] == #container[bottom] !weak;
+  ::[right] == #container[right] !weak;
 }
