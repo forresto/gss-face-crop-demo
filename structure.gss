@@ -1,26 +1,35 @@
 #container { 
-  width: == ::window[width] - 100;
-  height: == ::window[height] - 100;
-  center-x: == ::window[center-x];
-  center-y: == ::window[center-y];
+  width: == ::window[width] - 100 !require;
+  height: == ::window[height] - 100 !require;
+  center-x: == ::window[center-x] !require;
+  center-y: == ::window[center-y] !require;
 }
 
-@virtual "faces";
-
 #image {
-  /* aspect ratio */
-  ::[width] == ::[height] * 1.28385 !require;
+  /* aspect ratio 1280/977 */
+  ::[width] == ::[height] * (1280/977) !require;
+  ::[width] == [image-scale] * 1280 !require;
+
   /* cover */
   ::[width] >= #container[width] !strong;
   ::[height] >= #container[height] !strong;
-  /* don't crop faces - x 790 y 158 w 90 h 116 */
-  /*
-  ::[x] >= -790 !medium;
-  ::[y] >= -158 !medium;
-  ::[right] <= #container[width] + 880 !medium;
-  ::[bottom] <= #container[height] + 274 !medium;
-  */
+
+  /* don't crop faces */
+  ::[x] >= 50 - #face[x] !medium;
+  ::[y] >= 50 - #face[y] !medium;
+  ::[right] >= 50 - #face[right] !medium;
+  ::[bottom] >= 50 - #face[bottom] !medium;
+
   /* center */
   ::[center-x] == #container[center-x] !weak;
   ::[center-y] == #container[center-y] !weak;
+}
+
+/* todo @virtual "faces"; */
+/* face rectangle - x 790 y 158 w 90 h 116 */
+#face {
+  ::[x] == #image[x] + 790 * [image-scale];
+  ::[y] == #image[y] + 158 * [image-scale];
+  ::[width] == 90 * [image-scale];
+  ::[height] == 116 * [image-scale];
 }
