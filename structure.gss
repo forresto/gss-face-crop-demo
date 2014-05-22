@@ -1,0 +1,26 @@
+#container { 
+  width: == ::window[width] - 100;
+  height: == ::window[height] - 100;
+  center-x: == ::window[center-x];
+  center-y: == ::window[center-y];
+}
+
+@virtual "faces";
+
+#image {
+  /* aspect ratio */
+  ::[width] == ::[height] * 1.28385 !require;
+  /* cover */
+  ::[width] >= #container[width] !strong;
+  ::[height] >= #container[height] !strong;
+  /* don't crop faces - x 790 y 158 w 90 h 116 */
+  /*
+  ::[x] >= -790 !medium;
+  ::[y] >= -158 !medium;
+  ::[right] <= #container[width] + 880 !medium;
+  ::[bottom] <= #container[height] + 274 !medium;
+  */
+  /* center */
+  ::[center-x] == #container[center-x] !weak;
+  ::[center-y] == #container[center-y] !weak;
+}
