@@ -56,8 +56,7 @@
 
 
 #copyright {
-  ::[width] == ::[intrinsic-width];
-  ::[height] == ::[intrinsic-height];
+  ::[size] == ::[intrinsic-size];
   ::[y] == #container[bottom] !weak;
   ::[right] == #container[right] !weak;
 }
